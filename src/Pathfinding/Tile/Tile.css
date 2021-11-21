@@ -1,0 +1,13 @@
+.tile {
+   outline: 1px solid black;
+   display: inline-block;
+   background-color: lavender;
+}
+
+.start-tile {
+   background-color: #90ee90;
+}
+
+.finish-tile {
+   background-color: lightcoral;
+}
