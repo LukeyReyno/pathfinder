@@ -1,13 +1,27 @@
 .tile {
+   height: 25px;
+   width: 25px;
    outline: 1px solid black;
    display: inline-block;
    background-color: lavender;
 }
 
 .start-tile {
-   background-color: #90ee90;
+   background-color: lightgreen;
 }
 
 .finish-tile {
    background-color: lightcoral;
+}
+
+.visited-tile {
+   background-color: lightblue;
+}
+
+.shortestpath-tile {
+   background-color: lightyellow;
+}
+
+.obstacle-tile {
+   background-color: lightgray;
 }
