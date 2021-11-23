@@ -58,6 +58,7 @@ export function breadthFirstSearch(grid, startTile, finishTile, directions) {
       results.push(shortestPath);
    }
    else {
+      console.log("yo what the");
       results.push([]);
    }
    return results;

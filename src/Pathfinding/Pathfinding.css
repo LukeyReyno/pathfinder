@@ -1,3 +1,13 @@
 .grid {
    margin: 100px 0 0;
+   border-radius: 1%;
+}
+
+.btn {
+   margin: 10px;
+   padding: 1%;
+   border-radius: 1%;
+   background-color: lavenderblush;
+   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+   font-weight: bolder;
 }
