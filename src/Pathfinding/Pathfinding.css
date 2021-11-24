@@ -1,6 +1,40 @@
 .grid {
-   margin: 100px 0 0;
+   margin: 100px 0 50px 0;
    border-radius: 1%;
+   -webkit-user-select: none; /* Webkit */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* IE 10 */
+   /* Currently not supported in Opera but will be soon */
+   -o-user-select: none;
+   user-select: none;
+}
+
+.selection-block {
+   width: 500px;
+   display: inline-block;
+   -webkit-user-select: none; /* Webkit */
+   -moz-user-select: none; /* Firefox */
+   -ms-user-select: none; /* IE 10 */
+   /* Currently not supported in Opera but will be soon */
+   -o-user-select: none;
+   user-select: none;
+}
+
+.subtitle {
+   border-radius: 5px;
+   background-color: beige;
+   padding: 5px;
+   box-shadow: 0 0 5px black;
+   font-family: monospace;
+}
+
+.selection {
+   margin: 10px;
+   padding: 1%;
+   border-radius: 1%;
+   background-color: lightcyan;
+   font-family: monospace;
+   font-weight: bolder;
 }
 
 .btn {

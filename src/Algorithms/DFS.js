@@ -12,21 +12,23 @@ var i = queue.shift(); // queue is now [5]
 alert(i);
 */
 
-export function breadthFirstSearch(grid, startTile, finishTile, directions) {
+export function depthFirstSearch(grid, startTile, finishTile, directions) {
    // Prevent terminal edge cases
    if (!startTile || !finishTile || startTile === finishTile) {
       return false;
    }
    // Potentially initialize all nodes to infinite distance
    grid[startTile.row][startTile.col].distance = 0;
-   let queue = [startTile];
+   let stack = [startTile];
    let visitedTilesInOrder = [];
    let possiblePath = false;
-   queueLoop:
-   while (queue.length > 0) {
-      let current = queue.shift();
+
+   stackLoop:
+   while (stack.length > 0) {
+      let current = stack.pop();
+      if (!current.isVisited)
+         visitedTilesInOrder.push(current);
       current.isVisited = true;
-      visitedTilesInOrder.push(current);
       for (var d in directions) {
          let newCoordinateX = current.col + directions[d][0];
          let newCoordinateY = current.row + directions[d][1];
@@ -37,14 +39,14 @@ export function breadthFirstSearch(grid, startTile, finishTile, directions) {
          let neighbor = grid[newCoordinateY][newCoordinateX];
          if (neighbor === finishTile) {
             possiblePath = true;
-            break queueLoop;
+            break stackLoop;
          }
          if (neighbor.isObstacle) {
             continue;
          }
-         if (neighbor.distance === Infinity) {
+         if (!neighbor.isVisited) {
             neighbor.distance = current.distance + 1;
-            queue.push(neighbor);
+            stack.push(neighbor);
          }
       }
    }
@@ -91,6 +93,7 @@ function collectPath(grid, finishTile, directions) {
       }
       pathFromStartToFinish.unshift(minNeighbor);
       current = minNeighbor;
+      current.isVisited = true;
    }
    return pathFromStartToFinish;
 }
