@@ -21,7 +21,8 @@ const VISIT_TIME_DELAY = 25; // in ms
 const CARDINAL = [[1, 0], [0, 1], [-1, 0], [0, -1]];
 const DIAGONAL = [[1, 1], [-1, 1], [-1, -1], [1, -1]];
 const CARDINAL_DIAGONAL = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
-const DIRECTIONS = [CARDINAL, DIAGONAL, CARDINAL_DIAGONAL];
+const KNIGHT_TRAVERSE = [[2, 1], [1, 2], [-1, 2], [-2, 1], [-2, -1], [-1, -2], [1, -2], [2, -1]];
+const DIRECTIONS = [CARDINAL, DIAGONAL, CARDINAL_DIAGONAL, KNIGHT_TRAVERSE];
 
 const ALGORITHMS = [breadthFirstSearch, depthFirstSearch, dijkstra];
 
@@ -235,6 +236,7 @@ export default class Pathfinding extends Component {
                      <option value="0">Cardinal</option>
                      <option value="1">Diagonal</option>
                      <option value="2">Cardinal + Diagonal</option>
+                     <option value="3">Knight Traversal</option>
                   </select>
                </span>
             </div>
