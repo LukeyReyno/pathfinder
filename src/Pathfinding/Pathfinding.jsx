@@ -2,9 +2,11 @@ import React, {Component} from "react";
 import Tile from './Tile/Tile'
 import {breadthFirstSearch} from '../Algorithms/BFS'
 import {depthFirstSearch} from '../Algorithms/DFS'
+import {dijkstra} from '../Algorithms/dijkstra'
 
 import './Pathfinding.css';
 
+const TILE_WIDTH = 25; // in pixels
 const ROW_LENGTH = 15;
 const COL_LENGTH = 50;
 
@@ -21,7 +23,7 @@ const DIAGONAL = [[1, 1], [-1, 1], [-1, -1], [1, -1]];
 const CARDINAL_DIAGONAL = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
 const DIRECTIONS = [CARDINAL, DIAGONAL, CARDINAL_DIAGONAL];
 
-const ALGORITHMS = [breadthFirstSearch, depthFirstSearch, breadthFirstSearch];
+const ALGORITHMS = [breadthFirstSearch, depthFirstSearch, dijkstra];
 
 export default class Pathfinding extends Component {
    constructor(props) {
@@ -33,16 +35,42 @@ export default class Pathfinding extends Component {
          algorithmIndex: 0,
          timeoutIDs: [],
          isSimulating: false,
-         startPosition: [],
-         finishPosition: [],
+         startPosition: INITIAL_START_POS,
+         finishPosition: INITIAL_FINISH_POS,
          dragStart: false,
          dragFinish: false,
       };
    }
 
+   initializeGrid = () => {
+      const grid = [];
+      for (let row = 0; row < ROW_LENGTH; row++) {
+         const currentRow = [];
+         for (let col = 0; col < COL_LENGTH; col++) {
+            const currentTile = {
+               row,
+               col,
+               distance: Infinity,
+               isVisited: false,
+               isStart: row === this.state.startPosition[0] && col === this.state.startPosition[1],
+               isFinish: row === this.state.finishPosition[0] && col === this.state.finishPosition[1],
+            };
+            currentRow.push(currentTile);
+         }
+         grid.push(currentRow);
+      }
+      return grid;
+   }
+
+   resetGrid() {
+      if (this.state.isSimulating) return;
+      const newGrid = this.initializeGrid();
+      this.setState({grid: newGrid});
+   }
+
    componentDidMount() {
-      const grid = initializeGrid();
-      this.setState({grid, startPosition: INITIAL_START_POS, finishPosition: INITIAL_FINISH_POS});
+      const grid = this.initializeGrid();
+      this.setState({grid});
       this.setUpChoice();
    }
 
@@ -67,6 +95,7 @@ export default class Pathfinding extends Component {
       const newGrid = this.state.grid;
       if (this.state.dragStart) {
          newGrid[this.state.startPosition[0]][this.state.startPosition[1]].isStart = false;
+         newGrid[this.state.startPosition[0]][this.state.startPosition[1]].distance = Infinity;
          document.getElementById(`tile-${this.state.startPosition[0]}-${this.state.startPosition[1]}`).className = 'tile ';
          this.setState({startPosition: [row, col]});
          newGrid[row][col].isStart = true;
@@ -109,7 +138,11 @@ export default class Pathfinding extends Component {
    }
 
    animateTraversal(vistedTilesInOrder) {
-      for (let i = 1; i < vistedTilesInOrder.length; i++) {
+      for (let i = 0; i < vistedTilesInOrder.length; i++) {
+         // In case specific algorithms return start or finish in their visitation order
+         if (vistedTilesInOrder[i] === this.state.grid[this.state.finishPosition[0]][this.state.finishPosition[1]]) continue;
+         if (vistedTilesInOrder[i] === this.state.grid[this.state.startPosition[0]][this.state.startPosition[1]]) continue;
+
          let tID = setTimeout(() => {
             const current = vistedTilesInOrder[i];
             document.getElementById(`tile-${current.row}-${current.col}`).className = 'tile visited-tile';
@@ -129,18 +162,19 @@ export default class Pathfinding extends Component {
    }
 
    resetVisualization() {
+      if (!this.state.isSimulating) return;
       for (let i = 0; i < this.state.timeoutIDs.length; i++) {
          clearTimeout(this.state.timeoutIDs[i]);
       }
       const newGrid = this.state.grid;
       for (let i = 0; i < ROW_LENGTH; i++) {
          for (let j = 0; j < COL_LENGTH; j++) {
+            newGrid[i][j].distance = Infinity;
             if (newGrid[i][j].isFinish || newGrid[i][j].isStart || newGrid[i][j].isObstacle) {
                continue;
             }
             if (newGrid[i][j].isVisited) {
                newGrid[i][j].isVisited = false;
-               newGrid[i][j].distance = Infinity;
                document.getElementById(`tile-${i}-${j}`).className = 'tile ';
             }
          }
@@ -150,6 +184,7 @@ export default class Pathfinding extends Component {
    }
 
    visualize() {
+      if (this.state.isSimulating) return;
       this.setState({isSimulating: true});
       const {grid, directionsIndex, algorithmIndex, startPosition, finishPosition} = this.state;
       console.log(grid);
@@ -172,33 +207,38 @@ export default class Pathfinding extends Component {
 
       return (
          <div>
-            <h1>General Path Finder Simulation</h1>
-            <button className="btn" onClick={() => this.visualize()}>
-               Visualize Algorithm
-            </button>
-            <button className="btn" onClick={() => this.resetVisualization()}>
-               Stop The Simulation!
-            </button>
-            <br /><br />
-            <span key="selectAlgorithm" className="selection-block">
-               <label htmlFor="algorithms" className="subtitle">Choose a Algorithm to search tiles:</label>
-               <br />
-               <select name="algorithms" className="selection" id="algorithmSelection">
-                  <option value="0">Breadth First Search</option>
-                  <option value="1">Depth First Search</option>
-                  <option value="2">Dijkstra's Algorithm</option>
-               </select>
-            </span>
-            <span key="selectDirection" className="selection-block">
-               <label htmlFor="directions" className="subtitle">Choose a direction to travel:</label>
-               <br />
-               <select name="directions" className="selection" id="directionSelection">
-                  <option value="0">Cardinal</option>
-                  <option value="1">Diagonal</option>
-                  <option value="2">Cardinal + Diagonal</option>
-               </select>
-            </span>
-            <div className="grid">
+            <div className="heading">
+               <h1>General Path Finder Simulation</h1>
+               <button className="btn" onClick={() => this.visualize()}>
+                  Visualize Algorithm
+               </button>
+               <button className="btn" onClick={() => this.resetVisualization()}>
+                  Stop The Simulation!
+               </button>
+               <button id="reset" className="btn" onClick={() => this.resetGrid()}>
+                  Reset The Grid
+               </button>
+               <br /><br />
+               <span key="selectAlgorithm" className="selection-block">
+                  <label htmlFor="algorithms" className="subtitle">Choose a Algorithm to search tiles:</label>
+                  <br />
+                  <select name="algorithms" className="selection" id="algorithmSelection">
+                     <option value="0">Breadth First Search</option>
+                     <option value="1">Depth First Search</option>
+                     <option value="2">Dijkstra's Algorithm</option>
+                  </select>
+               </span>
+               <span key="selectDirection" className="selection-block">
+                  <label htmlFor="directions" className="subtitle">Choose a direction to travel:</label>
+                  <br />
+                  <select name="directions" className="selection" id="directionSelection">
+                     <option value="0">Cardinal</option>
+                     <option value="1">Diagonal</option>
+                     <option value="2">Cardinal + Diagonal</option>
+                  </select>
+               </span>
+            </div>
+            <div className="grid" style={{width: `${COL_LENGTH*TILE_WIDTH+TILE_WIDTH/2}px`}}>
                {grid.map((row, rowIndex) => {
                   return (
                   <div key={rowIndex} style={{height: `${ROW_HEIGHT}`}}>
@@ -225,24 +265,4 @@ export default class Pathfinding extends Component {
          </div>
       )
    }
-}
-
-const initializeGrid = () => {
-   const grid = [];
-   for (let row = 0; row < ROW_LENGTH; row++) {
-      const currentRow = [];
-      for (let col = 0; col < COL_LENGTH; col++) {
-         const currentTile = {
-            row,
-            col,
-            distance: Infinity,
-            isVisited: false,
-            isStart: row === INITIAL_START_POS[0] && col === INITIAL_START_POS[1],
-            isFinish: row === INITIAL_FINISH_POS[0] && col === INITIAL_FINISH_POS[1],
-         };
-         currentRow.push(currentTile);
-      }
-      grid.push(currentRow);
-   }
-   return grid;
 }

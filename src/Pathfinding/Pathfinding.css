@@ -1,13 +1,45 @@
+.heading {
+   background-color: cornflowerblue;
+   border-radius: 0 0 25px 25px;
+   border-width: 5px;
+   border-style: groove;
+   padding-bottom: 10px;
+}
+
+.heading > h1 {
+   font-family:Verdana, Geneva, Tahoma, sans-serif;
+   padding-top: 10px;
+   margin-top: 0;
+}
+
 .grid {
-   margin: 100px 0 50px 0;
+   margin: 50px 0 50px 0;
    border-radius: 1%;
+   overflow-x: scroll;
+   display: inline-block;
+   padding: 2%;
+   border-radius: 15px;
+   box-shadow: 0 0 5px black;;
+   border-width: 5px;
+   background-color: azure;
+
    -webkit-user-select: none; /* Webkit */
    -moz-user-select: none; /* Firefox */
    -ms-user-select: none; /* IE 10 */
    /* Currently not supported in Opera but will be soon */
    -o-user-select: none;
    user-select: none;
+
+   -ms-overflow-style: none;  /* IE and Edge */
+   scrollbar-width: none;  /* Firefox */
+   
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.grid::-webkit-scrollbar {
+   display: none;
+ }
+ 
 
 .selection-block {
    width: 500px;
@@ -44,4 +76,8 @@
    background-color: lavenderblush;
    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
    font-weight: bolder;
+}
+
+#reset {
+   background-color: lightcoral;
 }
