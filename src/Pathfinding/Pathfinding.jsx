@@ -18,6 +18,7 @@ const ROW_HEIGHT = "25px";
 
 const VISIT_TIME_DELAY = 25; // in ms
 
+// Neighboring nodes -- TilePosition + (a, b)
 const CARDINAL = [[1, 0], [0, 1], [-1, 0], [0, -1]];
 const DIAGONAL = [[1, 1], [-1, 1], [-1, -1], [1, -1]];
 const CARDINAL_DIAGONAL = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
@@ -239,6 +240,32 @@ export default class Pathfinding extends Component {
                      <option value="3">Knight Traversal</option>
                   </select>
                </span>
+               <div className="legend">
+                  <span id="startTileLegend" className="legendEntry">
+                     <span className="tile start-tile"></span>
+                     <span className="legendText"> Start Tile</span>
+                  </span>
+                  <span id="finishTileLegend" className="legendEntry">
+                     <span className="tile finish-tile"></span>
+                     <span className="legendText"> Finish Tile</span>
+                  </span>
+                  <span id="obstacleTileLegend" className="legendEntry">
+                  <span className="tile obstacle-tile"></span>
+                     <span className="legendText"> Obstacle Tile</span>
+                  </span>
+                  <span id="unvisitedTileLegend" className="legendEntry">
+                     <span className="tile"></span>
+                     <span className="legendText"> Unvisited Tile</span>
+                  </span>
+                  <span id="visitedTileLegend" className="legendEntry">
+                  <span className="tile visited-tile"></span>
+                     <span className="legendText"> Visited Tile</span>
+                  </span>
+                  <span id="pathTileLegend" className="legendEntry">
+                     <span className="tile shortestpath-tile"></span>
+                     <span className="legendText"> Path Tile</span>
+                  </span>
+               </div>
             </div>
             <div className="grid" style={{width: `${COL_LENGTH*TILE_WIDTH+TILE_WIDTH/2}px`}}>
                {grid.map((row, rowIndex) => {
