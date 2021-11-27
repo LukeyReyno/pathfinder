@@ -156,15 +156,21 @@ export default class Pathfinding extends Component {
    }
 
    animateShortestPath(shortestPath) {
-      console.log(shortestPath);
-      for (let i = 1; i < shortestPath.length - 1; i++) {
-         const current = shortestPath[i];
-         document.getElementById(`tile-${current.row}-${current.col}`).className = 'tile shortestpath-tile';
+      // Case where the path from start to finish is impossible
+      if (shortestPath.length === 0) {
+         document.getElementById('mainGrid').style.backgroundColor = 'red';
+      }
+      else {
+         for (let i = 1; i < shortestPath.length - 1; i++) {
+            const current = shortestPath[i];
+            document.getElementById(`tile-${current.row}-${current.col}`).className = 'tile shortestpath-tile';
+         }
       }
    }
 
    resetVisualization() {
       if (!this.state.isSimulating) return;
+      document.getElementById('mainGrid').style.backgroundColor = '';
       for (let i = 0; i < this.state.timeoutIDs.length; i++) {
          clearTimeout(this.state.timeoutIDs[i]);
       }
@@ -267,7 +273,7 @@ export default class Pathfinding extends Component {
                   </span>
                </div>
             </div>
-            <div className="grid" style={{width: `${COL_LENGTH*TILE_WIDTH+TILE_WIDTH/2}px`}}>
+            <div className="grid" id="mainGrid" style={{width: `${COL_LENGTH*TILE_WIDTH+TILE_WIDTH/2}px`}}>
                {grid.map((row, rowIndex) => {
                   return (
                   <div key={rowIndex} style={{height: `${ROW_HEIGHT}`}}>

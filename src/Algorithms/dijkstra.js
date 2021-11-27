@@ -22,6 +22,10 @@ export function dijkstra(grid, startTile, finishTile, directions) {
       
       // get minimum distance vertex
       const current = vArray[0];
+      if (current.distance === Infinity) {
+         break;
+      }
+
       visitedTilesInOrder.push(current);
       current.isVisited = true;
       vertexSet.delete(current);
