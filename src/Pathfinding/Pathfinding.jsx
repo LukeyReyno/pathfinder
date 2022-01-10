@@ -16,7 +16,7 @@ const INITIAL_FINISH_POS = [6, 45];
 // Typically the same as the tile
 const ROW_HEIGHT = "25px";
 
-const VISIT_TIME_DELAY = 25; // in ms
+var visit_time = 25; // in ms
 
 // Neighboring nodes -- TilePosition + (a, b)
 const CARDINAL = [[1, 0], [0, 1], [-1, 0], [0, -1]];
@@ -121,6 +121,11 @@ export default class Pathfinding extends Component {
       this.setState({mouseIsPressed: false, dragStart: false, dragFinish: false});
    }
 
+   handleTimeScaleChange() {
+      visit_time = document.getElementById('time slider').value;
+      document.getElementById('time value').textContent = visit_time;
+   }
+
    setUpChoice() {
       let dropDownElement = document.getElementById("directionSelection");
       dropDownElement.addEventListener("change", (choice) => {
@@ -148,7 +153,7 @@ export default class Pathfinding extends Component {
          let tID = setTimeout(() => {
             const current = vistedTilesInOrder[i];
             document.getElementById(`tile-${current.row}-${current.col}`).className = 'tile visited-tile';
-         }, VISIT_TIME_DELAY * i);
+         }, visit_time * i);
          let tIDList = this.state.timeoutIDs;
          tIDList.push(tID);
          this.setState({timeoutIDs: tIDList});
@@ -203,7 +208,7 @@ export default class Pathfinding extends Component {
       console.log(paths[1]);
       let tID = setTimeout(() => {
          this.animateShortestPath(paths[1]);
-      }, VISIT_TIME_DELAY * paths[0].length);
+      }, visit_time * paths[0].length);
       let tIDList = this.state.timeoutIDs;
       tIDList.push(tID);
       this.setState({timeoutIDs: tIDList});
@@ -246,6 +251,10 @@ export default class Pathfinding extends Component {
                      <option value="3">Knight Traversal</option>
                   </select>
                </span>
+               <div class="slider">
+                  Time Scale: <span id="time value">25</span> ms per tile visit<br/>
+                  <input id="time slider" type="range" min="1" max="50" defaultValue="25" step="1" onInput={this.handleTimeScaleChange}/>
+               </div>
                <div className="legend">
                   <span id="startTileLegend" className="legendEntry">
                      <span className="tile start-tile"></span>
