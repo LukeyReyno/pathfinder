@@ -27,6 +27,7 @@ const DIRECTIONS = [CARDINAL, DIAGONAL, CARDINAL_DIAGONAL, KNIGHT_TRAVERSE];
 
 const ALGORITHMS = [breadthFirstSearch, depthFirstSearch, dijkstra];
 
+// General Pathfinding Main Object
 export default class Pathfinding extends Component {
    constructor(props) {
       super(props);
@@ -44,6 +45,7 @@ export default class Pathfinding extends Component {
       };
    }
 
+   // Create a matrix of row length and col length
    initializeGrid = () => {
       const grid = [];
       for (let row = 0; row < ROW_LENGTH; row++) {
@@ -65,6 +67,7 @@ export default class Pathfinding extends Component {
    }
 
    resetGrid() {
+   // wipes the obstacles on the grid, if not simulating
       if (this.state.isSimulating) return;
       const newGrid = this.initializeGrid();
       this.setState({grid: newGrid});
@@ -76,6 +79,7 @@ export default class Pathfinding extends Component {
       this.setUpChoice();
    }
 
+   // Following mouse functions handles dragging of obstacle tiles
    handleMouseDown(row, col) {
       if (this.state.isSimulating) return;
       const newGrid = this.state.grid;
@@ -122,10 +126,12 @@ export default class Pathfinding extends Component {
    }
 
    handleTimeScaleChange() {
+   // change time scale value with the scroll and text
       visit_time = document.getElementById('time slider').value;
       document.getElementById('time value').textContent = visit_time;
    }
 
+   // drop down menu selector
    setUpChoice() {
       let dropDownElement = document.getElementById("directionSelection");
       dropDownElement.addEventListener("change", (choice) => {
@@ -144,6 +150,7 @@ export default class Pathfinding extends Component {
       })
    }
 
+   // handles changes in tile color 
    animateTraversal(vistedTilesInOrder) {
       for (let i = 0; i < vistedTilesInOrder.length; i++) {
          // In case specific algorithms return start or finish in their visitation order
@@ -173,6 +180,7 @@ export default class Pathfinding extends Component {
       }
    }
 
+   // Deletes visitations and shortest path tiles
    resetVisualization() {
       if (!this.state.isSimulating) return;
       document.getElementById('mainGrid').style.backgroundColor = '';
@@ -197,6 +205,8 @@ export default class Pathfinding extends Component {
    }
 
    visualize() {
+   // Only runs when grid is not already being simulated
+   // computes a path and dedicates time values to visited tiles
       if (this.state.isSimulating) return;
       this.setState({isSimulating: true});
       const {grid, directionsIndex, algorithmIndex, startPosition, finishPosition} = this.state;
@@ -216,6 +226,7 @@ export default class Pathfinding extends Component {
    }
 
    render() {
+   // main html body and method association
       const {grid} = this.state;
 
       return (
