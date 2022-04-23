@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import axios from 'axios';
 import Tile from './Tile/Tile'
 import {breadthFirstSearch} from '../Algorithms/BFS'
 import {depthFirstSearch} from '../Algorithms/DFS'
@@ -42,6 +43,7 @@ export default class Pathfinding extends Component {
          finishPosition: INITIAL_FINISH_POS,
          dragStart: false,
          dragFinish: false,
+         adviceObject: {} 
       };
    }
 
@@ -77,7 +79,25 @@ export default class Pathfinding extends Component {
       const grid = this.initializeGrid();
       this.setState({grid});
       this.setUpChoice();
+      this.getAdvice();
    }
+
+   getAdvice() {
+        try {
+            axios.get('http://45.77.6.116:3032/advice').then(response => {
+                // response data is an array with 1 object
+                const adviceObject = response.data[0];
+                console.log(response.status); 
+                console.log(adviceObject.advice);
+                this.setState({adviceObject}); //should be json object with adivce and source
+            });
+        }
+        catch (error){
+            //We're not handling errors. Just logging into the console.
+            console.log(error);
+            return false;
+        }
+    }
 
    // Following mouse functions handles dragging of obstacle tiles
    handleMouseDown(row, col) {
@@ -225,8 +245,8 @@ export default class Pathfinding extends Component {
       console.log(grid);
    }
 
-   render() {
-   // main html body and method association
+    render() {
+      // main html body and method association
       const {grid} = this.state;
 
       return (
@@ -293,6 +313,8 @@ export default class Pathfinding extends Component {
                   </span>
                </div>
             </div>
+            <h3 id="adviceText">"{this.state.adviceObject.advice}" - </h3>
+            <h3 id="adviceText">{this.state.adviceObject.source}</h3>
             <div className="grid" id="mainGrid" style={{width: `${COL_LENGTH*TILE_WIDTH+TILE_WIDTH/2}px`}}>
                {grid.map((row, rowIndex) => {
                   return (
@@ -318,6 +340,6 @@ export default class Pathfinding extends Component {
                })}
             </div>
          </div>
-      )
+      );
    }
 }
