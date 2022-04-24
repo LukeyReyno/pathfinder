@@ -84,7 +84,7 @@ export default class Pathfinding extends Component {
 
    getAdvice() {
         try {
-            axios.get('http://45.77.6.116:3032/advice').then(response => {
+            axios.get('https://gitfit.lucasreyna.me/advice').then(response => {
                 // response data is an array with 1 object
                 const adviceObject = response.data[0];
                 console.log(response.status); 
@@ -314,7 +314,7 @@ export default class Pathfinding extends Component {
                </div>
             </div>
             <h3 id="adviceText">"{this.state.adviceObject.advice}" - </h3>
-            <h3 id="adviceText">{this.state.adviceObject.source}</h3>
+            <h3>{this.state.adviceObject.source}</h3>
             <div className="grid" id="mainGrid" style={{width: `${COL_LENGTH*TILE_WIDTH+TILE_WIDTH/2}px`}}>
                {grid.map((row, rowIndex) => {
                   return (
